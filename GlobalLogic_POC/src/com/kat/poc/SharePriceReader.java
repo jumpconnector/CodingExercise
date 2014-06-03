@@ -22,15 +22,17 @@ import com.kat.poc.util.FormatUtil;
  * <br>
  * File can have comment lines starting with '#'<br>
  * 
- * If junk data/value is found in a line it will be discarded while comparing share prices
+ * If junk data/value is found in a line it will be discarded while comparing
+ * share prices
+ * 
  * @author AshwiniK
  * 
  */
 public class SharePriceReader {
-	
+
 	private File sharePriceCsvFile; // the file to read for share values
 	protected boolean hasJunkData = false; // flag for presence of junk data
-	
+
 	// map to hold share prices keyed on company name
 	protected Map<String, SharePrice> sharePriceMap;
 
@@ -42,10 +44,12 @@ public class SharePriceReader {
 
 	/**
 	 * Displays max share prices for companies
-	 * @throws FileNotFoundException 
-	 * @throws SharePriceReaderException 
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws SharePriceReaderException
 	 */
-	public void displayMaxSharePrices() throws FileNotFoundException, SharePriceReaderException {
+	public void displayMaxSharePrices() throws FileNotFoundException,
+			SharePriceReaderException {
 		/*
 		 * Display error if sharePriceCsvFile does not exist
 		 */
@@ -54,23 +58,25 @@ public class SharePriceReader {
 		} else if (!sharePriceCsvFile.exists()) {
 			throw new SharePriceReaderException("Unable to read file : "
 					+ sharePriceCsvFile.getAbsolutePath());
-		} else if(sharePriceCsvFile.exists() && sharePriceCsvFile.isDirectory()) {
-			throw new SharePriceReaderException("The given filePath refers to a directory");
+		} else if (sharePriceCsvFile.exists()
+				&& sharePriceCsvFile.isDirectory()) {
+			throw new SharePriceReaderException(
+					"The given filePath refers to a directory");
 		}
 
-		if(sharePriceMap == null) {
+		if (sharePriceMap == null) {
 			readFile();
 		}
-		
+
 		if (hasJunkData) {
 			System.out
 					.println("Junk data found while reading the file, Please check contents");
 		}
-		
+
 		if (sharePriceMap == null || sharePriceMap.isEmpty()) {
 			throw new SharePriceReaderException("No data to display");
 		}
-		
+
 		System.out.println("Displaying max share prices from file : "
 				+ sharePriceCsvFile.getAbsolutePath());
 		StringBuilder sb = new StringBuilder();
@@ -94,24 +100,19 @@ public class SharePriceReader {
 			return;
 		}
 
-		sb.append(sharePrice.getCompanyName());
-		sb.append(AppConstants.SPACE);
-		sb.append(AppConstants.COLON);
-		sb.append(AppConstants.SPACE);
-		sb.append(sharePrice.getValue());
-		sb.append(AppConstants.SPACE);
-		sb.append(AppConstants.ON_STR);
-		sb.append(AppConstants.SPACE);
-		sb.append(sharePrice.getMonth());
-		sb.append(AppConstants.CSV_SEPARATOR);
-		sb.append(sharePrice.getYear());
-		sb.append(AppConstants.NEWLINE);
+		FormatUtil.addToStringBuilder(sb, sharePrice.getCompanyName(),
+				AppConstants.SPACE, AppConstants.COLON, AppConstants.SPACE,
+				sharePrice.getValue(), AppConstants.SPACE, AppConstants.ON_STR,
+				AppConstants.SPACE, sharePrice.getMonth(),
+				AppConstants.CSV_SEPARATOR, sharePrice.getYear(),
+				AppConstants.NEWLINE);
 	}
 
 	/**
 	 * Populates sharePriceMap with max Share Price for companies
-	 * @throws FileNotFoundException 
-	 * @throws SharePriceReaderException 
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws SharePriceReaderException
 	 */
 	void readFile() throws FileNotFoundException, SharePriceReaderException {
 		Scanner s = null; // to read file line by line
@@ -138,7 +139,7 @@ public class SharePriceReader {
 					hasJunkData = true;
 					continue;
 				}
-				
+
 				String year = sharePriceInfo[0];
 				String month = sharePriceInfo[1];
 
@@ -158,9 +159,10 @@ public class SharePriceReader {
 	 * 
 	 * @param headers
 	 * @return
-	 * @throws SharePriceReaderException 
+	 * @throws SharePriceReaderException
 	 */
-	protected boolean validateHeader(String[] headers) throws SharePriceReaderException {
+	protected boolean validateHeader(String[] headers)
+			throws SharePriceReaderException {
 		// display error and return false if no headers
 		// or file does not contain at least one company's share values
 		if (headers == null) {
@@ -169,7 +171,8 @@ public class SharePriceReader {
 					"Unable to read headers from file, check format");
 		} else if (headers.length < 3) {
 			hasJunkData = true;
-			throw new SharePriceReaderException("At least one company's data should exist in file");
+			throw new SharePriceReaderException(
+					"At least one company's data should exist in file");
 		}
 		return true;
 	}
@@ -225,7 +228,7 @@ public class SharePriceReader {
 	protected String[] readNextLine(Scanner s) {
 		if (s.hasNextLine()) {
 			String nextLine = s.nextLine();
-			if(nextLine.startsWith(AppConstants.HASH)) {
+			if (nextLine.startsWith(AppConstants.HASH)) {
 				return readNextLine(s);
 			} else {
 				return FormatUtil.splitAndFormat(nextLine);

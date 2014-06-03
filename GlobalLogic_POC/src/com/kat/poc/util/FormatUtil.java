@@ -23,4 +23,15 @@ public class FormatUtil {
 		return retVal;
 	}
 
+	public static void addToStringBuilder(StringBuilder sb, Object... args) {
+		if(sb == null || args == null || args.length == 0) {
+			return;
+		}
+		
+		for(Object arg : args) {
+			if(arg!= null) {
+				sb.append(String.valueOf(arg));
+			}
+		}
+	}
 }
