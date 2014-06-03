@@ -23,6 +23,11 @@ public class FormatUtil {
 		return retVal;
 	}
 
+	/**
+	 * Appends the contents of args array to StringBuilder object
+	 * @param sb
+	 * @param args
+	 */
 	public static void addToStringBuilder(StringBuilder sb, Object... args) {
 		if(sb == null || args == null || args.length == 0) {
 			return;
